@@ -32,6 +32,6 @@ public class TemperatureEntity {
     @Column(name = "CODE_LIST_CODE", nullable = false, unique = true)
     private String codeListCode;
 
-    @OneToMany(mappedBy = "code", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "codeListCode", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<TemperatureDetailEntity> temperatures;
 }

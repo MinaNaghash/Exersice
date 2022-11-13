@@ -56,6 +56,6 @@ public class TemperatureDetailEntity implements Serializable {
 
     @JsonIgnore
     @ManyToOne(targetEntity = TemperatureEntity.class, fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name = "CODE")
+    @JoinColumn(name = "Temperature_ID")
     private TemperatureEntity codeListCode;
 }

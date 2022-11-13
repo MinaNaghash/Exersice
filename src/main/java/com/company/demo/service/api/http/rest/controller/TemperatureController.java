@@ -30,33 +30,31 @@ public class TemperatureController {
 
     /**
      * Used to upload temperature file for UI
+     *
      * @param file base on temperature file format
      * @return message base on upload result
      */
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
-        String message = "";
-
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam(value = "file") MultipartFile file) {
         if (CSVHelper.hasCSVFormat(file)) {
             try {
 
-                List<TemperatureDto> temperatureDtos = CSVHelper.csvToTemperatures(file.getInputStream());
-                temperatureService.createTemperature(temperatureDtos);
+                List<TemperatureDto> temperatures = CSVHelper.csvToTemperatures(file.getInputStream());
+                temperatureService.createTemperature(temperatures);
 
-                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                String message = "Uploaded the file successfully: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
             } catch (Exception e) {
-                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                String message = "Could not upload the file: " + file.getOriginalFilename() + "!";
                 return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
             }
         }
-
-        message = "Please upload a csv file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Please upload a csv file!"));
     }
 
     /**
      * Used to fetch all temperature data from DBs.
+     *
      * @return list of temperatures if exist in database.
      */
     @GetMapping("/findAll")
@@ -76,12 +74,13 @@ public class TemperatureController {
 
     /**
      * used to delete all temperature data from database
+     *
      * @return message base on delete result.
      */
     @DeleteMapping("/deleteAll")
     public ResponseEntity<ResponseMessage> deleteAllTemperatures() {
         try {
-             temperatureService.deleteTemperature();
+            temperatureService.deleteTemperature();
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
@@ -91,15 +90,15 @@ public class TemperatureController {
 
     /**
      * Used to return temperature data based on code
-     * @param code
+     *
+     * @param code is the unique key of temperatures
      * @return temperatureDto if exist with request code.
      */
     @PostMapping(value = "/findAllByCode")
     public ResponseEntity<TemperatureDto> findAllTemperature(@PathVariable String code) {
         TemperatureDto temperatures = temperatureService.findByCode(code);
-        if(temperatures == null)
-        {
-            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        if (temperatures == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(temperatures, HttpStatus.OK);
     }

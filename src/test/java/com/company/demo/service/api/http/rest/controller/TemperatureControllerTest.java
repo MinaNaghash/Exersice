@@ -3,37 +3,52 @@ package com.company.demo.service.api.http.rest.controller;
 import com.company.demo.BaseTest;
 import com.company.demo.service.dto.TemperatureDto;
 import com.google.common.base.Charsets;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Order;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Main class to test temperature controller layer
+ *
  * @author mina.mn@gmail.com
  */
 public class TemperatureControllerTest extends BaseTest {
     private final String basePath = "/api/web/temperature/v1";
+    private final String fileName = "exercise.csv";
+
+    @Before
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
     @Test
     @Order(1)
     public void readFile() throws Exception {
-       super.readResource("exercise.csv", Charsets.UTF_8);
+        super.readResource(fileName, Charsets.UTF_8);
     }
 
     @Test
     @Order(2)
-    public void testCreateRecipe() throws Exception {
-        String uri = basePath + "/create";
-        String resource = super.readResource("exercise.csv", Charsets.UTF_8);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(uri)
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .content(resource)).andReturn();
+    public void testCreateTemperature() throws Exception {
+        String uri = basePath + "/upload";
+        String resource = super.readResource(fileName, Charsets.UTF_8);
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "multipartFile",
+                fileName,
+                "text/csv",
+                resource.getBytes());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart(uri)
+                .file(mockMultipartFile)).andReturn();
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);

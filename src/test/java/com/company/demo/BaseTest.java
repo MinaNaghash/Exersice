@@ -1,6 +1,5 @@
 package com.company.demo;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
@@ -13,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
@@ -21,7 +19,6 @@ import java.nio.charset.Charset;
 @SpringBootTest(classes = DemoApplication.class)
 @WebAppConfiguration
 public class BaseTest {
-    private final String FILE_TYPE = ".csv";
 
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -35,6 +32,7 @@ public class BaseTest {
     protected void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
+
     /**
      * Map to json string.
      *
@@ -63,7 +61,7 @@ public class BaseTest {
         return objectMapper.readValue(json, clazz);
     }
 
-    protected String readResource(final String fileName, Charset charset) throws Exception {
+    protected String readResource(final String fileName, Charset charset) {
         try {
             return Resources.toString(Resources.getResource(fileName), charset);
         } catch (IOException e) {
